@@ -15,6 +15,6 @@ char *read_line(int *i_eof)
 
 	return (input);
 }
-© 2022 GitHub, Inc.
+©2022 GitHub, Inc.
 Terms
 Priv
