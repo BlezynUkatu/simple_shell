@@ -1,64 +1,73 @@
-#include "shell.h"
+#include "main.h"
 
 /**
- * main - Entry point of the shell
+ * free_data - frees data structure
  *
- * @ac: Argument count
- * @av: Argument vector
- *
- * Return: the (int)value of status.
+ * @datash: data structure
+ * Return: no return
  */
-int main(int ac, char **av)
+void free_data(data_shell *datash)
 {
-	cmd_t cmd;
-	(void) ac;
+	unsigned int i;
 
-	signal(SIGINT, handl_sigint);
-	/*open_console();*/
-	init_cmd(&cmd, av);
-	rep_loop(&cmd);
-	free_cmd(&cmd);
-	return (cmd.status);
+	for (i = 0; datash->_environ[i]; i++)
+	{
+		free(datash->_environ[i]);
+	}
+
+	free(datash->_environ);
+	free(datash->pid);
 }
 
 /**
- * rep_loop - read-eval-print loop of shell
- * @cmd: data relevant (av, input, args)
+ * set_data - Initialize data structure
  *
- * Return: no return.
+ * @datash: data structure
+ * @av: argument vector
+ * Return: no return
  */
-void rep_loop(cmd_t *cmd)
+void set_data(data_shell *datash, char **av)
 {
-	int loop;
-	int i_eof;
-	char *input;
+	unsigned int i;
 
-	loop = 1;
-	while (loop == 1)
+	datash->av = av;
+	datash->input = NULL;
+	datash->args = NULL;
+	datash->status = 0;
+	datash->counter = 1;
+
+	for (i = 0; environ[i]; i++)
+		;
+
+	datash->_environ = malloc(sizeof(char *) * (i + 1));
+
+	for (i = 0; environ[i]; i++)
 	{
-		input =  _readwrite(1, &i_eof);
-		if (i_eof != -1)
-		{
-			input = handl_comment(input);
-			if (input == NULL)
-				continue;
-
-			if (check_syntax_error(cmd, input) == 1)
-			{
-				cmd->status = 2;
-				free(input);
-				continue;
-			}
-
-			input = parse_input(input, cmd);
-			loop = apply_seperators(cmd, input);
-			cmd->counter += 1;
-			free(input);
-		}
-		else
-		{
-			loop = 0;
-			free(input);
-		}
+		datash->_environ[i] = _strdup(environ[i]);
 	}
+
+	datash->_environ[i] = NULL;
+	datash->pid = aux_itoa(getpid());
+}
+
+/**
+ * main - Entry point
+ *
+ * @ac: argument count
+ * @av: argument vector
+ *
+ * Return: 0 on success.
+ */
+int main(int ac, char **av)
+{
+	data_shell datash;
+	(void) ac;
+
+	signal(SIGINT, get_sigint);
+	set_data(&datash, av);
+	shell_loop(&datash);
+	free_data(&datash);
+	if (datash.status < 0)
+		return (255);
+	return (datash.status);
 }
