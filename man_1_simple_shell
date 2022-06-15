@@ -1,5 +1,5 @@
 iB.\"Manpage for simple shell 
-.\"Created by BLESSING O. UKATU & MARK OSEI 
+.\"Created by Blessing O. Ukatu & Mark Osei
 
 .TH SODASH 1 "May 18 2022" "SODA SHELL - Simple Shell man page"
 
@@ -95,4 +95,5 @@ access(2), chdir(2), execve(2), _exit(2), exit(3), fflush(3), fork(2), free(3), 
 Sodash\fR takes basic functionality of the \fBsh\fR shell. This man page is based on the man page bash(1)
 
 .SH AUTHORS
-BLESSING O. UKATU & MARK OSEI 
+
+Blessing O. Ukatu & Mark Osei
